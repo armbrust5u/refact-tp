@@ -5,6 +5,8 @@ import org.iut.refactoring.calcul.CalculSalaire;
 import org.iut.refactoring.calcul.CalculSalaireFactory;
 import org.iut.refactoring.employe.Employe;
 import org.iut.refactoring.employe.EmployeRepository;
+import org.iut.refactoring.rapport.GenerateurRapport;
+import org.iut.refactoring.rapport.GenerateurRapportFactory;
 
 import java.util.*;
 import java.time.*;
@@ -43,35 +45,11 @@ public class GestionPersonnel {
     public void generationRapport(String typeRapport, String filtre) {
         System.out.println("=== RAPPORT: " + typeRapport + " ===");
 
-        if (typeRapport.equals("SALAIRE")) {
-            for (Employe emp : employeRepository.obtenirTous()) {
-                if (filtre == null || filtre.isEmpty() ||
-                        emp.getEquipe().equals(filtre)) {
-                    String id = emp.getId();
-                    String nom = emp.getNom();
-                    double salaire = calculSalaire(id);
-                    System.out.println(nom + ": " + salaire + " €");
-                }
-            }
-        } else if (typeRapport.equals("EXPERIENCE")) {
-            for (Employe emp : employeRepository.obtenirTous()) {
-                if (filtre == null || filtre.isEmpty() ||
-                        emp.getEquipe().equals(filtre)) {
-                    String nom = emp.getNom();
-                    int exp = emp.getExperience();
-                    System.out.println(nom + ": " + exp + " années");
-                }
-            }
-        } else if (typeRapport.equals("DIVISION")) {
-            HashMap<String, Integer> compteurDivisions = new HashMap<>();
-            for (Employe emp : employeRepository.obtenirTous()) {
-                String div = emp.getEquipe();
-                compteurDivisions.put(div, compteurDivisions.getOrDefault(div, 0) + 1);
-            }
-            for (Map.Entry<String, Integer> entry : compteurDivisions.entrySet()) {
-                System.out.println(entry.getKey() + ": " + entry.getValue() + " employés");
-            }
+        GenerateurRapport generateur = GenerateurRapportFactory.getRapport(typeRapport);
+        if (generateur != null) {
+            generateur.generer(employeRepository.obtenirTous(), filtre);
         }
+
         logs.add(LocalDateTime.now() + " - Rapport généré: " + typeRapport);
     }
 

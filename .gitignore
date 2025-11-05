@@ -24,5 +24,7 @@ hs_err_pid*
 replay_pid*
 /gradle/
 /.idea/
+/src/main/main.iml
+/src/test/test.iml
+/refact-tp.iml
 /build/
-refact-tp.iml

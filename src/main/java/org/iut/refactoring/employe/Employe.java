@@ -3,12 +3,12 @@ package org.iut.refactoring.employe;
 import java.util.UUID;
 
 public class Employe {
-    private String id;
+    private final String id;
     private String type;
-    private String nom;
-    private double salaireDeBase;
-    private int experience;
-    private String equipe;
+    private final String nom;
+    private final double salaireDeBase;
+    private final int experience;
+    private final String equipe;
 
     public Employe(String type, String nom, double salaireDeBase, int experience, String equipe) {
         this.id = UUID.randomUUID().toString();
@@ -46,9 +46,5 @@ public class Employe {
 
     public void setType(String type) {
         this.type = type;
-    }
-
-    public void setEquipe(String equipe) {
-        this.equipe = equipe;
     }
 }
