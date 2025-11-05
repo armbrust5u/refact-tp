@@ -1,4 +1,4 @@
-package org.iut.refactoring;
+package org.iut.refactoring.employe;
 
 import java.util.UUID;
 
