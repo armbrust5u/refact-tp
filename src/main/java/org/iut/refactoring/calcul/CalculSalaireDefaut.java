@@ -1,0 +1,10 @@
+package org.iut.refactoring.calcul;
+
+import org.iut.refactoring.employe.Employe;
+
+public class CalculSalaireDefaut implements CalculSalaire {
+    @Override
+    public double calculerSalaire(Employe employe) {
+        return employe.getSalaireDeBase();
+    }
+}

@@ -1,5 +1,6 @@
 package org.iut.refactoring;
 
+import org.iut.refactoring.employe.Employe;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -189,5 +190,13 @@ class TestGestionPersonnel {
         gp.ajouteSalarie("CHEF DE PROJET", "Bob", 4000, 4, "Management");
         gp.generationRapport("EXPERIENCE", "Management");
         assertTrue(gp.logs.getLast().contains("Rapport généré"));
+    }
+
+    @Test
+    void testCalculBonusTypeInconnu() {
+        gp.ajouteSalarie("INCONNU", "Noah", 2500, 3, "Interne");
+        Employe emp = gp.getEmployes().getFirst();
+        double bonus = gp.calculBonusAnnuel(emp.getId());
+        assertEquals(0, bonus, 0.01);
     }
 }
