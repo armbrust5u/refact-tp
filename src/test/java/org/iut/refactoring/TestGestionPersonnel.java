@@ -21,26 +21,18 @@ class TestGestionPersonnel {
     void testAjoutSalaireDeveloppeur() {
         gp.ajouteSalarie("DEVELOPPEUR", "Noah", 3000, 6, "Interne");
         assertEquals(1, gp.getEmployes().size());
-        assertEquals(1, gp.salairesEmployes.size());
         assertFalse(gp.getLogs().isEmpty());
 
         Employe emp = gp.getEmployes().getFirst();
-        double salaire = gp.salairesEmployes.get(emp.getId());
+        double salaire = gp.calculSalaire(emp.getId());
         assertEquals(4140, salaire, 0.01);
-    }
-
-    void testAjoutSalaireChefDeProjet() {
-        gp.ajouteSalarie("CHEF DE PROJET", "Noah", 4000, 4, "Interne");
-        Employe emp = gp.getEmployes().getFirst();
-        double salaire = gp.salairesEmployes.get(emp.getId());
-        assertEquals(6600, salaire, 0.01);
     }
 
     @Test
     void testAjoutSalaireStagiaire() {
         gp.ajouteSalarie("STAGIAIRE", "Noah", 2000, 1, "Interne");
         Employe emp = gp.getEmployes().getFirst();
-        double salaire = gp.salairesEmployes.get(emp.getId());
+        double salaire = gp.calculSalaire(emp.getId());
         assertEquals(1200, salaire, 0.01);
     }
 
@@ -48,7 +40,8 @@ class TestGestionPersonnel {
     void testAjoutSalaireAutreType() {
         gp.ajouteSalarie("INCONNU", "Noah", 2500, 2, "Interne");
         Employe emp = gp.getEmployes().getFirst();
-        assertEquals(2500, gp.salairesEmployes.get(emp.getId()));
+        double salaire = gp.calculSalaire(emp.getId());
+        assertEquals(2500, salaire, 0.01);
     }
 
     @Test
@@ -65,14 +58,6 @@ class TestGestionPersonnel {
         Employe emp = gp.getEmployes().getFirst();
         double salaire = gp.calculSalaire(emp.getId());
         assertEquals(11600, salaire, 0.01);
-    }
-
-    @Test
-    void testCalculSalaireStagiaire() {
-        gp.ajouteSalarie("STAGIAIRE", "Noah", 2000, 1, "Interne");
-        Employe emp = gp.getEmployes().getFirst();
-        double salaire = gp.calculSalaire(emp.getId());
-        assertEquals(1200, salaire, 0.01);
     }
 
     @Test
