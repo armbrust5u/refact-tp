@@ -23,55 +23,54 @@ class TestGestionPersonnel {
         assertEquals(1, gp.salairesEmployes.size());
         assertFalse(gp.logs.isEmpty());
 
-        Object[] emp = gp.employes.getFirst();
-        double salaire = gp.salairesEmployes.get(emp[0]);
+        Employe emp = gp.employes.getFirst();
+        double salaire = gp.salairesEmployes.get(emp.getId());
         assertEquals(4140, salaire, 0.01);
     }
 
-    @Test
     void testAjoutSalaireChefDeProjet() {
         gp.ajouteSalarie("CHEF DE PROJET", "Noah", 4000, 4, "Interne");
-        Object[] emp = gp.employes.getFirst();
-        double salaire = gp.salairesEmployes.get(emp[0]);
+        Employe emp = gp.employes.getFirst();
+        double salaire = gp.salairesEmployes.get(emp.getId());
         assertEquals(6600, salaire, 0.01);
     }
 
     @Test
     void testAjoutSalaireStagiaire() {
         gp.ajouteSalarie("STAGIAIRE", "Noah", 2000, 1, "Interne");
-        Object[] emp = gp.employes.getFirst();
-        double salaire = gp.salairesEmployes.get(emp[0]);
+        Employe emp = gp.employes.getFirst();
+        double salaire = gp.salairesEmployes.get(emp.getId());
         assertEquals(1200, salaire, 0.01);
     }
 
     @Test
     void testAjoutSalaireAutreType() {
         gp.ajouteSalarie("INCONNU", "Noah", 2500, 2, "Interne");
-        Object[] emp = gp.employes.getFirst();
-        assertEquals(2500, gp.salairesEmployes.get(emp[0]));
+        Employe emp = gp.employes.getFirst();
+        assertEquals(2500, gp.salairesEmployes.get(emp.getId()));
     }
 
     @Test
     void testCalculSalaireDeveloppeurAvecBonus() {
         gp.ajouteSalarie("DEVELOPPEUR", "Noah", 3000, 11, "Interne");
-        Object[] emp = gp.employes.getFirst();
-        double salaire = gp.calculSalaire((String) emp[0]);
+        Employe emp = gp.employes.getFirst();
+        double salaire = gp.calculSalaire(emp.getId());
         assertEquals(4347.0, salaire, 0.1);
     }
 
     @Test
     void testCalculSalaireChefDeProjetAvecBonus() {
         gp.ajouteSalarie("CHEF DE PROJET", "Noah", 4000, 5, "Interne");
-        Object[] emp = gp.employes.getFirst();
-        double salaire = gp.calculSalaire((String) emp[0]);
+        Employe emp = gp.employes.getFirst();
+        double salaire = gp.calculSalaire(emp.getId());
         assertEquals(11600, salaire, 0.01);
     }
 
     @Test
     void testCalculSalaireStagiaire() {
         gp.ajouteSalarie("STAGIAIRE", "Noah", 2000, 1, "Interne");
-        Object[] emp = gp.employes.getFirst();
-        double salaire = gp.calculSalaire((String) emp[0]);
+        Employe emp = gp.employes.getFirst();
+        double salaire = gp.calculSalaire(emp.getId());
         assertEquals(1200, salaire, 0.01);
     }
 
@@ -106,9 +105,9 @@ class TestGestionPersonnel {
     @Test
     void testAvancementEmployeExiste() {
         gp.ajouteSalarie("STAGIAIRE", "Noah", 1800, 1, "Interne");
-        Object[] emp = gp.employes.getFirst();
-        gp.avancementEmploye((String) emp[0], "DEVELOPPEUR");
-        assertEquals("DEVELOPPEUR", emp[1]);
+        Employe emp = gp.employes.getFirst();
+        gp.avancementEmploye(emp.getId(), "DEVELOPPEUR");
+        assertEquals("DEVELOPPEUR", emp.getType());
     }
 
     @Test
@@ -121,7 +120,7 @@ class TestGestionPersonnel {
     void testGetEmployesParDivision() {
         gp.ajouteSalarie("DEVELOPPEUR", "Noah", 3000, 5, "Interne");
         gp.ajouteSalarie("STAGIAIRE", "Loup", 1000, 1, "Management");
-        List<Object[]> devs = gp.getEmployesParDivision("Interne");
+        List<Employe> devs = gp.getEmployesParDivision("Interne");
         assertEquals(1, devs.size());
     }
 
@@ -135,24 +134,24 @@ class TestGestionPersonnel {
     @Test
     void testCalculBonusDeveloppeur() {
         gp.ajouteSalarie("DEVELOPPEUR", "Noah", 3000, 6, "Interne");
-        Object[] emp = gp.employes.getFirst();
-        double bonus = gp.calculBonusAnnuel((String) emp[0]);
+        Employe emp = gp.employes.getFirst();
+        double bonus = gp.calculBonusAnnuel(emp.getId());
         assertEquals(450, bonus, 0.01);
     }
 
     @Test
     void testCalculBonusChefDeProjet() {
         gp.ajouteSalarie("CHEF DE PROJET", "Noah", 4000, 4, "Interne");
-        Object[] emp = gp.employes.getFirst();
-        double bonus = gp.calculBonusAnnuel((String) emp[0]);
+        Employe emp = gp.employes.getFirst();
+        double bonus = gp.calculBonusAnnuel(emp.getId());
         assertEquals(1040, bonus, 0.01);
     }
 
     @Test
     void testCalculBonusStagiaire() {
         gp.ajouteSalarie("STAGIAIRE", "Noah", 2000, 1, "Interne");
-        Object[] emp = gp.employes.getFirst();
-        double bonus = gp.calculBonusAnnuel((String) emp[0]);
+        Employe emp = gp.employes.getFirst();
+        double bonus = gp.calculBonusAnnuel(emp.getId());
         assertEquals(0, bonus, 0.01);
     }
 
@@ -165,8 +164,8 @@ class TestGestionPersonnel {
     @Test
     void testCalculSalaireTypeInconnu() {
         gp.ajouteSalarie("INCONNU", "Zoe", 2500, 2, "QA");
-        Object[] emp = gp.employes.getFirst();
-        double salaire = gp.calculSalaire((String) emp[0]);
+        Employe emp = gp.employes.getFirst();
+        double salaire = gp.calculSalaire(emp.getId());
         assertEquals(2500, salaire);
     }
 
