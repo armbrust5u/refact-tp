@@ -22,7 +22,7 @@ class TestGestionPersonnel {
         gp.ajouteSalarie("DEVELOPPEUR", "Noah", 3000, 6, "Interne");
         assertEquals(1, gp.getEmployes().size());
         assertEquals(1, gp.salairesEmployes.size());
-        assertFalse(gp.logs.isEmpty());
+        assertFalse(gp.getLogs().isEmpty());
 
         Employe emp = gp.getEmployes().getFirst();
         double salaire = gp.salairesEmployes.get(emp.getId());
@@ -85,14 +85,14 @@ class TestGestionPersonnel {
     void testGenerationRapportSalaire() {
         gp.ajouteSalarie("DEVELOPPEUR", "Noah", 3000, 2, "Interne");
         gp.generationRapport("SALAIRE", "Interne");
-        assertTrue(gp.logs.getLast().contains("Rapport généré"));
+        assertTrue(gp.getLogs().getLast().contains("Rapport généré"));
     }
 
     @Test
     void testGenerationRapportExperience() {
         gp.ajouteSalarie("CHEF DE PROJET", "Noah", 4000, 4, "Management");
         gp.generationRapport("EXPERIENCE", null);
-        assertTrue(gp.logs.getLast().contains("Rapport généré"));
+        assertTrue(gp.getLogs().getLast().contains("Rapport généré"));
     }
 
     @Test
@@ -100,7 +100,7 @@ class TestGestionPersonnel {
         gp.ajouteSalarie("STAGIAIRE", "Noah", 2000, 1, "Interne");
         gp.ajouteSalarie("CHEF DE PROJET", "Loup", 4000, 2, "Management");
         gp.generationRapport("DIVISION", "");
-        assertTrue(gp.logs.getLast().contains("Rapport généré"));
+        assertTrue(gp.getLogs().getLast().contains("Rapport généré"));
     }
 
     @Test
@@ -129,7 +129,7 @@ class TestGestionPersonnel {
     void testPrintLogs() {
         gp.ajouteSalarie("DEVELOPPEUR", "Noah", 3000, 2, "Interne");
         gp.printLogs();
-        assertFalse(gp.logs.isEmpty());
+        assertFalse(gp.getLogs().isEmpty());
     }
 
     @Test
@@ -174,14 +174,14 @@ class TestGestionPersonnel {
     void testGenerationRapportSalaireFiltreVide() {
         gp.ajouteSalarie("DEVELOPPEUR", "Alice", 3000, 2, "DevTeam");
         gp.generationRapport("SALAIRE", "");
-        assertTrue(gp.logs.getLast().contains("Rapport généré"));
+        assertTrue(gp.getLogs().getLast().contains("Rapport généré"));
     }
 
     @Test
     void testGenerationRapportSalaireAucuneCorrespondance() {
         gp.ajouteSalarie("DEVELOPPEUR", "Alice", 3000, 2, "DevTeam");
         gp.generationRapport("SALAIRE", "AutreEquipe");
-        assertTrue(gp.logs.getLast().contains("Rapport généré"));
+        assertTrue(gp.getLogs().getLast().contains("Rapport généré"));
     }
 
     @Test
@@ -189,7 +189,7 @@ class TestGestionPersonnel {
         gp.ajouteSalarie("DEVELOPPEUR", "Alice", 3000, 2, "DevTeam");
         gp.ajouteSalarie("CHEF DE PROJET", "Bob", 4000, 4, "Management");
         gp.generationRapport("EXPERIENCE", "Management");
-        assertTrue(gp.logs.getLast().contains("Rapport généré"));
+        assertTrue(gp.getLogs().getLast().contains("Rapport généré"));
     }
 
     @Test
