@@ -4,8 +4,12 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class LogService {
+
+    Logger logger = Logger.getLogger(getClass().getName());
+
     private final List<String> logs = new ArrayList<>();
 
     public void ajouterLog(String message) {
@@ -17,9 +21,9 @@ public class LogService {
     }
 
     public void afficherLogs() {
-        System.out.println("=== LOGS ===");
+        logger.info("=== LOGS ===");
         for (String log : logs) {
-            System.out.println(log);
+            logger.info(log);
         }
     }
 }

@@ -1,14 +1,16 @@
 package org.iut.refactoring.rapport;
 
 import org.iut.refactoring.employe.Employe;
+import org.iut.refactoring.print.PrintService;
+
 import java.util.List;
 
 public class RapportExperience implements GenerateurRapport {
     @Override
-    public void generer(List<Employe> employes, String filtre) {
+    public void generer(List<Employe> employes, String filtre, PrintService ps) {
         for (Employe emp : employes) {
             if (filtre == null || filtre.isEmpty() || emp.getEquipe().equals(filtre)) {
-                System.out.println(emp.getNom() + ": " + emp.getExperience() + " années");
+                ps.afficher(emp.getNom() + ": " + emp.getExperience() + " années");
             }
         }
     }

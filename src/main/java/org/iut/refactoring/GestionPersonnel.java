@@ -4,6 +4,8 @@ import org.iut.refactoring.employe.Employe;
 import org.iut.refactoring.employe.EmployeRepository;
 import org.iut.refactoring.exception.EmployeNotFoundException;
 import org.iut.refactoring.exception.RapportNotFoundException;
+import org.iut.refactoring.print.ConsolePrintService;
+import org.iut.refactoring.print.PrintService;
 import org.iut.refactoring.rapport.GenerateurRapport;
 import org.iut.refactoring.rapport.GenerateurRapportFactory;
 import org.iut.refactoring.log.LogService;
@@ -16,6 +18,7 @@ public class GestionPersonnel {
     private final EmployeRepository employeRepository = new EmployeRepository();
     private final SalaireService salaireService = new SalaireService();
     private final LogService logService = new LogService();
+    private final PrintService printService = new ConsolePrintService();
 
     public void ajouteSalarie(String type, String nom, double salaireDeBase, int experience, String equipe) {
         Employe emp = new Employe(type, nom, salaireDeBase, experience, equipe);
@@ -28,34 +31,34 @@ public class GestionPersonnel {
 
     public double calculSalaire(String employeId) {
         Employe emp = employeRepository.trouverParId(employeId)
-                .orElseThrow(() -> new EmployeNotFoundException("Employé non trouvé avec l'ID: " + employeId));
+                .orElseThrow(() -> new EmployeNotFoundException(employeId));
 
         return salaireService.calculerSalaire(emp);
     }
 
     public void generationRapport(String typeRapport, String filtre) {
-        System.out.println("=== RAPPORT: " + typeRapport + " ===");
+        printService.afficherTitre("RAPPORT: " + typeRapport);
 
         GenerateurRapport generateur = GenerateurRapportFactory.getRapport(typeRapport);
         if (generateur == null) {
             throw new RapportNotFoundException("Type de rapport inconnu: " + typeRapport);
         }
 
-        generateur.generer(employeRepository.obtenirTous(), filtre);
+        generateur.generer(employeRepository.obtenirTous(), filtre, printService);
 
         logService.ajouterLog("Rapport généré: " + typeRapport);
     }
 
     public void avancementEmploye(String employeId, String newType) {
         Employe emp = employeRepository.trouverParId(employeId)
-                .orElseThrow(() -> new EmployeNotFoundException("Employé non trouvé avec l'ID: " + employeId));
+                .orElseThrow(() -> new EmployeNotFoundException(employeId));
 
         emp.setType(newType);
 
         salaireService.mettreAJourCache(emp);
 
         logService.ajouterLog("Employé promu: " + emp.getNom());
-        System.out.println("Employé promu avec succès!");
+        printService.afficher("Employé promu avec succès!");
     }
 
     public List<Employe> getEmployesParDivision(String division) {
@@ -68,7 +71,7 @@ public class GestionPersonnel {
 
     public double calculBonusAnnuel(String employeId) {
         Employe emp = employeRepository.trouverParId(employeId)
-                .orElseThrow(() -> new EmployeNotFoundException("Employé non trouvé avec l'ID: " + employeId));
+                .orElseThrow(() -> new EmployeNotFoundException(employeId));
 
         return salaireService.calculerBonus(emp);
     }

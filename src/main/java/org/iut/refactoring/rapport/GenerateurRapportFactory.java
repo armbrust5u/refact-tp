@@ -4,6 +4,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class GenerateurRapportFactory {
+
+    private GenerateurRapportFactory() {
+
+    }
+
     private static final Map<String, GenerateurRapport> rapports = new HashMap<>();
 
     static {
