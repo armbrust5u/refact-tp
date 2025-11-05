@@ -191,4 +191,12 @@ class TestGestionPersonnel {
         gp.generationRapport("EXPERIENCE", "Management");
         assertTrue(gp.logs.getLast().contains("Rapport généré"));
     }
+
+    @Test
+    void testCalculBonusTypeInconnu() {
+        gp.ajouteSalarie("INCONNU", "Noah", 2500, 3, "Interne");
+        Employe emp = gp.getEmployes().getFirst();
+        double bonus = gp.calculBonusAnnuel(emp.getId());
+        assertEquals(0, bonus, 0.01);
+    }
 }

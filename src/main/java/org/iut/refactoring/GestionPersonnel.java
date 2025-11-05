@@ -1,5 +1,6 @@
 package org.iut.refactoring;
 
+import org.iut.refactoring.calcul.CalculBonus;
 import org.iut.refactoring.calcul.CalculSalaire;
 import org.iut.refactoring.calcul.CalculSalaireFactory;
 import org.iut.refactoring.employe.Employe;
@@ -18,8 +19,8 @@ public class GestionPersonnel {
         Employe emp = new Employe(type, nom, salaireDeBase, experience, equipe);
         employeRepository.ajouter(emp);
 
-        CalculSalaire calcul = CalculSalaireFactory.getCalcul(type);
-        double salaireFinal = calcul.calculerSalaire(emp);
+        CalculSalaire calculs = CalculSalaireFactory.getCalculs(type);
+        double salaireFinal = calculs.calculerSalaire(emp);
 
         salairesEmployes.put(emp.getId(), salaireFinal);
 
@@ -35,7 +36,7 @@ public class GestionPersonnel {
 
         Employe emp = empOpt.get();
 
-        CalculSalaire calcul = CalculSalaireFactory.getCalcul(emp.getType());
+        CalculSalaire calcul = CalculSalaireFactory.getCalculs(emp.getType());
         return calcul.calculerSalaire(emp);
     }
 
@@ -110,8 +111,13 @@ public class GestionPersonnel {
 
         Employe emp = empOpt.get();
 
-        CalculSalaire calcul = CalculSalaireFactory.getCalcul(emp.getType());
-        return calcul.calculerBonus(emp);
+        CalculBonus calculeur = CalculSalaireFactory.getCalculBonus(emp.getType());
+
+        if (calculeur == null) {
+            return 0.0;
+        }
+
+        return calculeur.calculerBonus(emp);
     }
 
     // Getter pour maintenir la compatibilité avec les tests

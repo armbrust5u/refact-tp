@@ -2,19 +2,20 @@ package org.iut.refactoring.calcul;
 
 import org.iut.refactoring.employe.Employe;
 
-public class CalculSalaireChefProjet implements CalculSalaire {
+public class CalculSalaireChefProjet implements CalculSalaire, CalculBonus {
     private static final double MULTIPLICATEUR_BASE = 1.5;
-    private static final double BONUS_EXPERIENCE = 1.1;
-    private static final double BONUS_FIXE = 5000.0;
+    private static final double MULTIPLICATEUR_EXPERIENCE = 1.1;
+    private static final int SEUIL_EXPERIENCE = 3;
+    private static final double BONUS_FIXE = 5000;
     private static final double TAUX_BONUS = 0.2;
-    private static final double MULTIPLICATEUR_BONUS_SENIOR = 1.3;
+    private static final double MULTIPLICATEUR_BONUS_EXPERIENCE = 1.3;
 
     @Override
     public double calculerSalaire(Employe employe) {
         double salaire = employe.getSalaireDeBase() * MULTIPLICATEUR_BASE;
 
-        if (employe.getExperience() > 3) {
-            salaire *= BONUS_EXPERIENCE;
+        if (employe.getExperience() > SEUIL_EXPERIENCE) {
+            salaire *= MULTIPLICATEUR_EXPERIENCE;
         }
 
         salaire += BONUS_FIXE;
@@ -26,8 +27,8 @@ public class CalculSalaireChefProjet implements CalculSalaire {
     public double calculerBonus(Employe employe) {
         double bonus = employe.getSalaireDeBase() * TAUX_BONUS;
 
-        if (employe.getExperience() > 3) {
-            bonus *= MULTIPLICATEUR_BONUS_SENIOR;
+        if (employe.getExperience() > SEUIL_EXPERIENCE) {
+            bonus *= MULTIPLICATEUR_BONUS_EXPERIENCE;
         }
 
         return bonus;

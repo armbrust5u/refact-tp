@@ -4,15 +4,23 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class CalculSalaireFactory {
-    private static final Map<String, CalculSalaire> calcul = new HashMap<>();
+    private static final Map<String, CalculSalaire> calculs = new HashMap<>();
 
     static {
-        calcul.put("DEVELOPPEUR", new CalculSalaireDeveloppeur());
-        calcul.put("CHEF DE PROJET", new CalculSalaireChefProjet());
-        calcul.put("STAGIAIRE", new CalculSalaireStagiaire());
+        calculs.put("DEVELOPPEUR", new CalculSalaireDeveloppeur());
+        calculs.put("CHEF DE PROJET", new CalculSalaireChefProjet());
+        calculs.put("STAGIAIRE", new CalculSalaireStagiaire());
     }
 
-    public static CalculSalaire getCalcul(String type) {
-        return calcul.getOrDefault(type, new CalculSalaireDefaut());
+    public static CalculSalaire getCalculs(String type) {
+        return calculs.getOrDefault(type, new CalculSalaireDefaut());
+    }
+
+    public static CalculBonus getCalculBonus(String type) {
+        CalculSalaire calcul = calculs.get(type);
+        if (calcul instanceof CalculBonus) {
+            return (CalculBonus) calcul;
+        }
+        return null;
     }
 }

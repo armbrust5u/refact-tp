@@ -9,9 +9,4 @@ public class CalculSalaireStagiaire implements CalculSalaire {
     public double calculerSalaire(Employe employe) {
         return employe.getSalaireDeBase() * MULTIPLICATEUR_BASE;
     }
-
-    @Override
-    public double calculerBonus(Employe employe) {
-        return 0.0; // Pas de bonus pour les stagiaires
-    }
 }

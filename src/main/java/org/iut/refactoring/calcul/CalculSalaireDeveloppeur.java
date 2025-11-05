@@ -2,7 +2,7 @@ package org.iut.refactoring.calcul;
 
 import org.iut.refactoring.employe.Employe;
 
-public class CalculSalaireDeveloppeur implements CalculSalaire {
+public class CalculSalaireDeveloppeur implements CalculSalaire, CalculBonus {
     private static final double MULTIPLICATEUR_BASE = 1.2;
     private static final double BONUS_5_ANS = 1.15;
     private static final double BONUS_10_ANS = 1.05;

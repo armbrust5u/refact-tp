@@ -7,9 +7,4 @@ public class CalculSalaireDefaut implements CalculSalaire {
     public double calculerSalaire(Employe employe) {
         return employe.getSalaireDeBase();
     }
-
-    @Override
-    public double calculerBonus(Employe employe) {
-        return 0.0;
-    }
 }
