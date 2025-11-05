@@ -199,4 +199,18 @@ class TestGestionPersonnel {
         double bonus = gp.calculBonusAnnuel(emp.getId());
         assertEquals(0, bonus, 0.01);
     }
+
+    @Test
+    void testRapportSalaireFiltreNull() {
+        gp.ajouteSalarie("CHEF DE PROJET", "Noah", 4000, 4, "Management");
+        gp.generationRapport("SALAIRE", null);
+        assertTrue(gp.getLogs().getLast().contains("Rapport généré"));
+    }
+
+    @Test
+    void testRapportExperienceFiltreVide() {
+        gp.ajouteSalarie("DEVELOPPEUR", "Loup", 3000, 2, "DevTeam");
+        gp.generationRapport("EXPERIENCE", "");
+        assertTrue(gp.getLogs().getLast().contains("Rapport généré"));
+    }
 }
