@@ -1,30 +1,25 @@
 package org.iut.refactoring;
 
-import org.iut.refactoring.calcul.CalculBonus;
-import org.iut.refactoring.calcul.CalculSalaire;
-import org.iut.refactoring.calcul.CalculSalaireFactory;
 import org.iut.refactoring.employe.Employe;
 import org.iut.refactoring.employe.EmployeRepository;
 import org.iut.refactoring.rapport.GenerateurRapport;
 import org.iut.refactoring.rapport.GenerateurRapportFactory;
 import org.iut.refactoring.log.LogService;
+import org.iut.refactoring.service.SalaireService;
 
 import java.util.*;
 
 public class GestionPersonnel {
 
     private final EmployeRepository employeRepository = new EmployeRepository();
-    public HashMap<String, Double> salairesEmployes = new HashMap<>();
+    private final SalaireService salaireService = new SalaireService();
     private final LogService logService = new LogService();
 
     public void ajouteSalarie(String type, String nom, double salaireDeBase, int experience, String equipe) {
         Employe emp = new Employe(type, nom, salaireDeBase, experience, equipe);
         employeRepository.ajouter(emp);
 
-        CalculSalaire calculs = CalculSalaireFactory.getCalculs(type);
-        double salaireFinal = calculs.calculerSalaire(emp);
-
-        salairesEmployes.put(emp.getId(), salaireFinal);
+        salaireService.mettreAJourCache(emp);
 
         logService.ajouterLog("Ajout de l'employé: " + nom);
     }
@@ -37,9 +32,7 @@ public class GestionPersonnel {
         }
 
         Employe emp = empOpt.get();
-
-        CalculSalaire calcul = CalculSalaireFactory.getCalculs(emp.getType());
-        return calcul.calculerSalaire(emp);
+        return salaireService.calculerSalaire(emp);
     }
 
     public void generationRapport(String typeRapport, String filtre) {
@@ -63,8 +56,7 @@ public class GestionPersonnel {
         Employe emp = empOpt.get();
         emp.setType(newType);
 
-        double nouveauSalaire = calculSalaire(employeId);
-        salairesEmployes.put(employeId, nouveauSalaire);
+        salaireService.mettreAJourCache(emp);
 
         logService.ajouterLog("Employé promu: " + emp.getNom());
         System.out.println("Employé promu avec succès!");
@@ -85,14 +77,7 @@ public class GestionPersonnel {
         }
 
         Employe emp = empOpt.get();
-
-        CalculBonus calculeur = CalculSalaireFactory.getCalculBonus(emp.getType());
-
-        if (calculeur == null) {
-            return 0.0;
-        }
-
-        return calculeur.calculerBonus(emp);
+        return salaireService.calculerBonus(emp);
     }
 
     // Getter pour maintenir la compatibilité avec les tests
