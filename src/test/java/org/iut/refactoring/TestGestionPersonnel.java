@@ -213,4 +213,22 @@ class TestGestionPersonnel {
         gp.generationRapport("EXPERIENCE", "");
         assertTrue(gp.getLogs().getLast().contains("Rapport généré"));
     }
+
+    @Test
+    void testCalculBonusChefDeProjetSansExperienceBonus() {
+        gp.ajouteSalarie("CHEF DE PROJET", "Noah", 4000, 2, "Interne");
+        Employe emp = gp.getEmployes().getFirst();
+
+        double bonus = gp.calculBonusAnnuel(emp.getId());
+        assertEquals(800, bonus, 0.01);
+    }
+
+    @Test
+    void testCalculBonusDeveloppeurSansExperienceBonus() {
+        gp.ajouteSalarie("DEVELOPPEUR", "Léo", 3000, 4, "Interne");
+        Employe emp = gp.getEmployes().getFirst();
+
+        double bonus = gp.calculBonusAnnuel(emp.getId());
+        assertEquals(300, bonus, 0.01);
+    }
 }
