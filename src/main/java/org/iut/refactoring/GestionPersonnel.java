@@ -2,6 +2,8 @@ package org.iut.refactoring;
 
 import org.iut.refactoring.employe.Employe;
 import org.iut.refactoring.employe.EmployeRepository;
+import org.iut.refactoring.exception.EmployeNotFoundException;
+import org.iut.refactoring.exception.RapportNotFoundException;
 import org.iut.refactoring.rapport.GenerateurRapport;
 import org.iut.refactoring.rapport.GenerateurRapportFactory;
 import org.iut.refactoring.log.LogService;
@@ -25,13 +27,9 @@ public class GestionPersonnel {
     }
 
     public double calculSalaire(String employeId) {
-        Optional<Employe> empOpt = employeRepository.trouverParId(employeId);
-        if (empOpt.isEmpty()) {
-            System.out.println("ERREUR: impossible de trouver l'employé");
-            return 0;
-        }
+        Employe emp = employeRepository.trouverParId(employeId)
+                .orElseThrow(() -> new EmployeNotFoundException("Employé non trouvé avec l'ID: " + employeId));
 
-        Employe emp = empOpt.get();
         return salaireService.calculerSalaire(emp);
     }
 
@@ -39,21 +37,19 @@ public class GestionPersonnel {
         System.out.println("=== RAPPORT: " + typeRapport + " ===");
 
         GenerateurRapport generateur = GenerateurRapportFactory.getRapport(typeRapport);
-        if (generateur != null) {
-            generateur.generer(employeRepository.obtenirTous(), filtre);
+        if (generateur == null) {
+            throw new RapportNotFoundException("Type de rapport inconnu: " + typeRapport);
         }
+
+        generateur.generer(employeRepository.obtenirTous(), filtre);
 
         logService.ajouterLog("Rapport généré: " + typeRapport);
     }
 
     public void avancementEmploye(String employeId, String newType) {
-        Optional<Employe> empOpt = employeRepository.trouverParId(employeId);
-        if (empOpt.isEmpty()) {
-            System.out.println("ERREUR: impossible de trouver l'employé");
-            return;
-        }
+        Employe emp = employeRepository.trouverParId(employeId)
+                .orElseThrow(() -> new EmployeNotFoundException("Employé non trouvé avec l'ID: " + employeId));
 
-        Employe emp = empOpt.get();
         emp.setType(newType);
 
         salaireService.mettreAJourCache(emp);
@@ -71,21 +67,16 @@ public class GestionPersonnel {
     }
 
     public double calculBonusAnnuel(String employeId) {
-        Optional<Employe> empOpt = employeRepository.trouverParId(employeId);
-        if (empOpt.isEmpty()) {
-            return 0;
-        }
+        Employe emp = employeRepository.trouverParId(employeId)
+                .orElseThrow(() -> new EmployeNotFoundException("Employé non trouvé avec l'ID: " + employeId));
 
-        Employe emp = empOpt.get();
         return salaireService.calculerBonus(emp);
     }
 
-    // Getter pour maintenir la compatibilité avec les tests
     public List<Employe> getEmployes() {
         return employeRepository.obtenirTous();
     }
 
-    // Getter pour accéder aux logs si nécessaire pour les tests
     public List<String> getLogs() {
         return logService.obtenirLogs();
     }

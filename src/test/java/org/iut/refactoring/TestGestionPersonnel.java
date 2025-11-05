@@ -1,6 +1,7 @@
 package org.iut.refactoring;
 
 import org.iut.refactoring.employe.Employe;
+import org.iut.refactoring.exception.EmployeNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -62,8 +63,9 @@ class TestGestionPersonnel {
 
     @Test
     void testCalculSalaireEmployeInconnu() {
-        double salaire = gp.calculSalaire("FAUX_ID");
-        assertEquals(0, salaire);
+        assertThrows(EmployeNotFoundException.class, () -> {
+            gp.calculSalaire("FAUX_ID");
+        });
     }
 
     @Test
@@ -98,8 +100,9 @@ class TestGestionPersonnel {
 
     @Test
     void testAvancementEmployeInconnu() {
-        gp.avancementEmploye("ID_FAUX", "CHEF DE PROJET");
-        assertTrue(true);
+        assertThrows(EmployeNotFoundException.class, () -> {
+            gp.avancementEmploye("ID_FAUX", "CHEF DE PROJET");
+        });
     }
 
     @Test
@@ -143,8 +146,9 @@ class TestGestionPersonnel {
 
     @Test
     void testCalculBonusEmployeInconnu() {
-        double bonus = gp.calculBonusAnnuel("FAUX_ID");
-        assertEquals(0, bonus);
+        assertThrows(EmployeNotFoundException.class, () -> {
+            gp.calculBonusAnnuel("FAUX_ID");
+        });
     }
 
     @Test
