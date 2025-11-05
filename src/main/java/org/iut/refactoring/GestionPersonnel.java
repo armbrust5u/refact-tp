@@ -5,13 +5,13 @@ import java.time.*;
 
 public class GestionPersonnel {
 
-    public ArrayList<Employe> employes = new ArrayList<>();
+    private final EmployeRepository employeRepository = new EmployeRepository();
     public HashMap<String, Double> salairesEmployes = new HashMap<>();
     public ArrayList<String> logs = new ArrayList<>();
 
     public void ajouteSalarie(String type, String nom, double salaireDeBase, int experience, String equipe) {
         Employe emp = new Employe(type, nom, salaireDeBase, experience, equipe);
-        employes.add(emp);
+        employeRepository.ajouter(emp);
 
         double salaireFinal = salaireDeBase;
         if (type.equals("DEVELOPPEUR")) {
@@ -34,18 +34,13 @@ public class GestionPersonnel {
     }
 
     public double calculSalaire(String employeId) {
-        Employe emp = null;
-        for (Employe e : employes) {
-            if (e.getId().equals(employeId)) {
-                emp = e;
-                break;
-            }
-        }
-        if (emp == null) {
+        Optional<Employe> empOpt = employeRepository.trouverParId(employeId);
+        if (empOpt.isEmpty()) {
             System.out.println("ERREUR: impossible de trouver l'employé");
             return 0;
         }
 
+        Employe emp = empOpt.get();
         String type = emp.getType();
         double salaireDeBase = emp.getSalaireDeBase();
         int experience = emp.getExperience();
@@ -78,7 +73,7 @@ public class GestionPersonnel {
         System.out.println("=== RAPPORT: " + typeRapport + " ===");
 
         if (typeRapport.equals("SALAIRE")) {
-            for (Employe emp : employes) {
+            for (Employe emp : employeRepository.obtenirTous()) {
                 if (filtre == null || filtre.isEmpty() ||
                         emp.getEquipe().equals(filtre)) {
                     String id = emp.getId();
@@ -88,7 +83,7 @@ public class GestionPersonnel {
                 }
             }
         } else if (typeRapport.equals("EXPERIENCE")) {
-            for (Employe emp : employes) {
+            for (Employe emp : employeRepository.obtenirTous()) {
                 if (filtre == null || filtre.isEmpty() ||
                         emp.getEquipe().equals(filtre)) {
                     String nom = emp.getNom();
@@ -98,7 +93,7 @@ public class GestionPersonnel {
             }
         } else if (typeRapport.equals("DIVISION")) {
             HashMap<String, Integer> compteurDivisions = new HashMap<>();
-            for (Employe emp : employes) {
+            for (Employe emp : employeRepository.obtenirTous()) {
                 String div = emp.getEquipe();
                 compteurDivisions.put(div, compteurDivisions.getOrDefault(div, 0) + 1);
             }
@@ -110,29 +105,24 @@ public class GestionPersonnel {
     }
 
     public void avancementEmploye(String employeId, String newType) {
-        for (Employe emp : employes) {
-            if (emp.getId().equals(employeId)) {
-                emp.setType(newType);
-
-                double nouveauSalaire = calculSalaire(employeId);
-                salairesEmployes.put(employeId, nouveauSalaire);
-
-                logs.add(LocalDateTime.now() + " - Employé promu: " + emp.getNom());
-                System.out.println("Employé promu avec succès!");
-                return;
-            }
+        Optional<Employe> empOpt = employeRepository.trouverParId(employeId);
+        if (empOpt.isEmpty()) {
+            System.out.println("ERREUR: impossible de trouver l'employé");
+            return;
         }
-        System.out.println("ERREUR: impossible de trouver l'employé");
+
+        Employe emp = empOpt.get();
+        emp.setType(newType);
+
+        double nouveauSalaire = calculSalaire(employeId);
+        salairesEmployes.put(employeId, nouveauSalaire);
+
+        logs.add(LocalDateTime.now() + " - Employé promu: " + emp.getNom());
+        System.out.println("Employé promu avec succès!");
     }
 
-    public ArrayList<Employe> getEmployesParDivision(String division) {
-        ArrayList<Employe> resultat = new ArrayList<>();
-        for (Employe emp : employes) {
-            if (emp.getEquipe().equals(division)) {
-                resultat.add(emp);
-            }
-        }
-        return resultat;
+    public List<Employe> getEmployesParDivision(String division) {
+        return employeRepository.trouverParEquipe(division);
     }
 
     public void printLogs() {
@@ -143,15 +133,12 @@ public class GestionPersonnel {
     }
 
     public double calculBonusAnnuel(String employeId) {
-        Employe emp = null;
-        for (Employe e : employes) {
-            if (e.getId().equals(employeId)) {
-                emp = e;
-                break;
-            }
+        Optional<Employe> empOpt = employeRepository.trouverParId(employeId);
+        if (empOpt.isEmpty()) {
+            return 0;
         }
-        if (emp == null) return 0;
 
+        Employe emp = empOpt.get();
         String type = emp.getType();
         int experience = emp.getExperience();
         double salaireDeBase = emp.getSalaireDeBase();
@@ -171,5 +158,10 @@ public class GestionPersonnel {
             bonus = 0; // Pas de bonus
         }
         return bonus;
+    }
+
+    // Getter pour maintenir la compatibilité avec les tests
+    public List<Employe> getEmployes() {
+        return employeRepository.obtenirTous();
     }
 }
